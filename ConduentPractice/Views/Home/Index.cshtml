@@ -1,0 +1,78 @@
+﻿@model ConduentPractice.Models.ViewModels.StudentViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Scripts {
+    <script type="text/javascript" src="~/Content/student/scripts/index.js"></script>
+}
+<script>
+    app.studentControls = {
+        studentLineChartDataSet: JSON.parse('@Html.Raw(Model.StudentGradeAverageChartDataSetJson)'),
+        studentBarChartDataSet: JSON.parse('@Html.Raw(Model.StudentSchoolGradeChartDataSetJson)')
+    };
+</script>
+
+<link href="~/Content/student/styles/index.css" rel="stylesheet" />
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "studentForm", enctype = "multipart/form-data" }))
+{
+    if (ViewData["invalidFile"] != null)
+    {
+    <div class="alert alert-danger" role="alert">
+        <strong>@ViewData["invalidFile"]</strong>
+    </div>
+    }
+    <div class="form-group">
+        <span class="btn btn-default btn-file">
+            <input id="studentExcelFile" class="form-control" type="file" name="studentFile">
+        </span>
+    </div>
+}
+
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="alert alert-info" role="alert">
+                        <strong>Calificación Promedio: </strong>
+                        @Model.StudentSchoolGradesAverage
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                        <strong>Estudiante con la mejor calificacion: </strong>
+                        @Model.StudentNameWithBestSchoolGrade
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                        <strong>Estudiante con la peor calificacion: </strong>
+                        @Model.StudentNameWithWorstSchoolGrade
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>Calificaciones por Alumno</h2>
+                    <br />
+                    <canvas id="studentBarChartSummary" width="100%" height="100%"></canvas>
+                </div>
+                <div class="col-md-6">
+                    <h2>Promedio por Grado</h2>
+                    <br />
+                    <canvas id="groupLineChartSummary" width="100%" height="100%"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <div class="alert alert-info">
+        <strong>Seleccione un Archivo Excel para continuar.</strong>
+    </div>
+}
+
+
